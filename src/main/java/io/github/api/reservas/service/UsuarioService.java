@@ -1,6 +1,5 @@
 package io.github.api.reservas.service;
 
-import io.github.api.reservas.avatar.AvatarInterface;
 import io.github.api.reservas.domain.Usuario;
 import io.github.api.reservas.exception.ConsultaCpfInvalidoException;
 import io.github.api.reservas.exception.ConsultaIdInvalidoException;
@@ -8,6 +7,8 @@ import io.github.api.reservas.exception.CpfJaExisteException;
 import io.github.api.reservas.exception.EmailJaExisteException;
 import io.github.api.reservas.repository.UsuarioRepository;
 import io.github.api.reservas.request.AtualizarUsuarioRequest;
+import io.github.api.reservas.request.CadastrarUsuarioRequest;
+import io.github.api.reservas.validator.ValidatorUsuario;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,32 +20,21 @@ import org.springframework.stereotype.Service;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final AvatarInterface avatarInterface;
+    private final ValidatorUsuario validatorUsuario;
 
-    public Usuario cadastraUsuario(Usuario usuario) throws Exception {
-        boolean emailDuplicado = usuarioRepository.existsByEmail(usuario.getEmail());
-        boolean cpfDuplicado = usuarioRepository.existsByCpf(usuario.getCpf());
+    public Usuario cadastraUsuario(CadastrarUsuarioRequest cadastrarUsuarioRequest) throws Exception {
+        validatorUsuario.validaCadastroUsuario(cadastrarUsuarioRequest.getEmail(), cadastrarUsuarioRequest.getCpf());
 
-        if (emailDuplicado) {
-            throw new EmailJaExisteException(usuario.getEmail());
-        }
-        if (cpfDuplicado) {
-            throw new CpfJaExisteException(usuario.getCpf());
-        }
+        Usuario usuario = Usuario.builder()
+                .nome(cadastrarUsuarioRequest.getNome())
+                .email(cadastrarUsuarioRequest.getEmail())
+                .senha(cadastrarUsuarioRequest.getSenha())
+                .cpf(cadastrarUsuarioRequest.getCpf())
+                .dataNascimento(cadastrarUsuarioRequest.getDataNascimento())
+                .endereco(cadastrarUsuarioRequest.getEndereco())
+                .build();
 
-        usuario = new Usuario(
-                usuario.getId(),
-                usuario.getNome(),
-                usuario.getEmail(),
-                usuario.getSenha(),
-                usuario.getCpf(),
-                usuario.getDataNascimento(),
-                usuario.getEndereco(),
-                avatarInterface.getAvatar().getLink()
-        );
-
-        usuarioRepository.save(usuario);
-        return usuario;
+        return usuarioRepository.save(usuario);
     }
 
     public Page<Usuario> listarUsuarios(@PageableDefault Pageable pageable) {
@@ -91,7 +81,6 @@ public class UsuarioService {
         usuario.setNome(atualizarUsuarioRequest.getNome());
         usuario.setSenha(atualizarUsuarioRequest.getSenha());
 
-        usuarioRepository.save(usuario);
-        return usuario;
+        return usuarioRepository.save(usuario);
     }
 }

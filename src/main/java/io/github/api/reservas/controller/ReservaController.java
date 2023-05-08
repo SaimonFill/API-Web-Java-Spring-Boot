@@ -4,7 +4,7 @@ import io.github.api.reservas.domain.FormaPagamento;
 import io.github.api.reservas.domain.Reserva;
 import io.github.api.reservas.request.CadastrarReservaRequest;
 import io.github.api.reservas.response.InformacaoReservaResponse;
-import io.github.api.reservas.response.ReservaDTO;
+import io.github.api.reservas.response.ReservaResponse;
 import io.github.api.reservas.service.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ public class ReservaController {
 
     private final ReservaService reservaService;
 
-    private final ReservaDTO informacaoReservaResponse;
+    private final ReservaResponse informacaoReservaResponse;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

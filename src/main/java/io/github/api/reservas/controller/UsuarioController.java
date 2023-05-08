@@ -2,6 +2,7 @@ package io.github.api.reservas.controller;
 
 import io.github.api.reservas.domain.Usuario;
 import io.github.api.reservas.request.AtualizarUsuarioRequest;
+import io.github.api.reservas.request.CadastrarUsuarioRequest;
 import io.github.api.reservas.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,8 +23,8 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<Usuario> cadastraUsuario(@RequestBody @Valid Usuario usuario) throws Exception {
-        Usuario usuarioSalvo = usuarioService.cadastraUsuario(usuario);
+    public ResponseEntity<Usuario> cadastraUsuario(@RequestBody @Valid CadastrarUsuarioRequest cadastrarUsuarioRequest) throws Exception {
+        Usuario usuarioSalvo = usuarioService.cadastraUsuario(cadastrarUsuarioRequest);
         return ResponseEntity.created(URI.create("/usuarios")).body(usuarioSalvo);
     }
 

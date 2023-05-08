@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ReservaDTO {
+public class ReservaResponse {
 
     private final ReservaService reservaService;
     private final UsuarioService usuarioService;
@@ -24,22 +24,22 @@ public class ReservaDTO {
         final Anuncio dadosAnuncio = anuncioService.buscaAnuncioPorId(cadastrarReservaRequest.getIdAnuncio());
         final Reserva dadosReserva = reservaService.buscaReservaResponse(cadastrarReservaRequest);
 
-        return new InformacaoReservaResponse(
-                dadosReserva.getId(),
-                new DadosSolicitanteResponse(
-                        cadastrarReservaRequest.getIdSolicitante(),
-                        nomeSolicitante.getNome()
-                ),
-                dadosReserva.getQuantidadePessoas(),
-                new DadosAnuncioResponse(
-                        dadosAnuncio.getId(),
-                        dadosAnuncio.getImovel(),
-                        dadosAnuncio.getAnunciante(),
-                        dadosAnuncio.getFormasAceitas(),
-                        dadosAnuncio.getDescricao()
-                ),
-                dadosReserva.getPeriodo(),
-                dadosReserva.getPagamento()
-        );
+       return InformacaoReservaResponse.builder()
+                .idReserva(dadosReserva.getId())
+                .solicitante(DadosSolicitanteResponse.builder()
+                        .id(cadastrarReservaRequest.getIdSolicitante())
+                        .nome(nomeSolicitante.getNome())
+                        .build())
+                .quantidadePessoas(dadosReserva.getQuantidadePessoas())
+                .anuncio(DadosAnuncioResponse.builder()
+                        .id(dadosAnuncio.getId())
+                        .imovel(dadosAnuncio.getImovel())
+                        .anunciante(dadosAnuncio.getAnunciante())
+                        .formasAceitas(dadosAnuncio.getFormasAceitas())
+                        .descricao(dadosAnuncio.getDescricao())
+                        .build())
+                .periodo(dadosReserva.getPeriodo())
+                .pagamento(dadosReserva.getPagamento())
+                .build();
     }
 }

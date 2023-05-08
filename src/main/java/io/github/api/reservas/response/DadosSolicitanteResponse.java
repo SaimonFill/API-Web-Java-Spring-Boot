@@ -1,6 +1,5 @@
 package io.github.api.reservas.response;
 
-
 import lombok.*;
 
 @Getter

@@ -38,11 +38,4 @@ public class Imovel {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean ativo = false;
 
-    public Imovel(String identificacao, TipoImovel tipoImovel, Endereco endereco, Usuario proprietario, List<CaracteristicaImovel> caracteristicas) {
-        this.identificacao = identificacao;
-        this.tipoImovel = tipoImovel;
-        this.endereco = endereco;
-        this.proprietario = proprietario;
-        this.caracteristicas = caracteristicas;
-    }
 }

@@ -27,18 +27,17 @@ public class AnuncioService {
 
         validaImovelComAnuncio(idImovel);
 
-        final Anuncio anuncio = new Anuncio(
-                cadastrarAnuncioRequest.getTipoAnuncio(),
-                imovel,
-                anunciante,
-                cadastrarAnuncioRequest.getValorDiaria(),
-                cadastrarAnuncioRequest.getFormasAceitas(),
-                cadastrarAnuncioRequest.getDescricao()
-        );
+        Anuncio anuncio = Anuncio.builder()
+                .tipoAnuncio(cadastrarAnuncioRequest.getTipoAnuncio())
+                .imovel(imovel)
+                .anunciante(anunciante)
+                .valorDiaria(cadastrarAnuncioRequest.getValorDiaria())
+                .formasAceitas(cadastrarAnuncioRequest.getFormasAceitas())
+                .descricao(cadastrarAnuncioRequest.getDescricao())
+                .build();
 
         anuncio.setAtivo(true);
-        anuncioRepository.save(anuncio);
-        return anuncio;
+        return anuncioRepository.save(anuncio);
     }
 
     public Page<Anuncio> listarAnuncios(Pageable pageable) {
@@ -50,12 +49,12 @@ public class AnuncioService {
     }
 
     public boolean validaImovelComAnuncio(Long idImovel) throws Exception {
-//       boolean imovelContemAnuncio = anuncioRepository.existsByImovel_Id(idImovel);
        boolean imovelContemAnuncioTrue = anuncioRepository.existsByAtivoTrueAndImovel_Id(idImovel);
 
        if(imovelContemAnuncioTrue) {
            throw new ImovelJaContemAnuncioException(idImovel);
        }
+
        return true;
     }
 

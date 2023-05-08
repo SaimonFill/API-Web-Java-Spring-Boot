@@ -23,9 +23,8 @@ public class ReservaService {
     private final UsuarioService usuarioService;
     private final AnuncioService anuncioService;
     private final ReservaRepository reservaRepository;
-//    private ValidatorReserva validatorReserva;
 
-    public Reserva criaReserva(CadastrarReservaRequest cadastrarReservaRequest) throws Exception {
+    public void criaReserva(CadastrarReservaRequest cadastrarReservaRequest) throws Exception {
         final Usuario solicitante = usuarioService.buscaUsuarioPorId(cadastrarReservaRequest.getIdSolicitante());
         final Anuncio anuncio = anuncioService.buscaAnuncioPorId(cadastrarReservaRequest.getIdAnuncio());
 
@@ -45,24 +44,23 @@ public class ReservaService {
                 StatusPagamento.PENDENTE
         );
 
-        final Reserva reserva = new Reserva(
-                solicitante,
-                anuncio,
-                cadastrarReservaRequest.getPeriodo(),
-                cadastrarReservaRequest.getQuantidadePessoas(),
-                LocalDateTime.now(),
-                pagamento
-        );
+        final Reserva reserva = Reserva.builder()
+                .solicitante(solicitante)
+                .anuncio(anuncio)
+                .periodo(cadastrarReservaRequest.getPeriodo())
+                .quantidadePessoas(cadastrarReservaRequest.getQuantidadePessoas())
+                .dataHoraReserva(LocalDateTime.now())
+                .pagamento(pagamento)
+                .build();
+
         reservaRepository.save(reserva);
-        return reserva;
     }
 
     public double calculaValorTotal(CadastrarReservaRequest cadastrarReservaRequest) throws Exception {
         Integer diarias = cadastrarReservaRequest.getPeriodo().getDataHoraFinal().compareTo(cadastrarReservaRequest.getPeriodo().getDataHoraInicial());
         Double valorDiaria = anuncioService.buscaAnuncioPorId(cadastrarReservaRequest.getIdAnuncio()).getValorDiaria().doubleValue();
-        Double valorTotal = diarias * valorDiaria;
 
-        return valorTotal;
+        return diarias * valorDiaria;
     }
 
     public Page<Reserva> buscaReservaPorIdSolicitante
